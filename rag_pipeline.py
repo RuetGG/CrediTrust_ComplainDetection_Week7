@@ -36,7 +36,7 @@ Question:
 Answer:
 """
 
-def retrieve_chunks(question, k=5):
+def retrieve_chunks(question, k=3):
     query_embedding = embedding_model.encode([question]).astype("float32")
     distances, indices = index.search(query_embedding, k)
     
@@ -63,3 +63,31 @@ def rag_answer(question, k=5):
     response = llm(prompt)[0]['generated_text']
     
     return response, retrieved
+
+if __name__ == "__main__":
+    
+    questions = [
+         "Why are customers complaining?",
+    "Why do customers report?",
+    "Why are money transfers delayed?",
+    "What about about high personal loan fees?"
+    ]
+    evaluation = []
+    
+    for q in questions:
+        answer, sources = rag_answer(q)
+        evaluation.append({
+            "Question": q,
+            "Generated Answer": answer,
+            "Retrieved Sources": [f'{s["product"]} {s["complaint_id"]}' for s in sources[:2]],
+            "Quality Score (1-5)": "-",
+            "Comments":"-"
+        })
+    for e in evaluation:
+        print("Question:", e["Question"])
+        print("Answer:", e["Generated Answer"])
+        print("Sources:", e["Retrieved Sources"])
+        print("Quality:", e["Quality Score (1-5)"])
+        print("Comments:", e["Comments"])
+        print("---")
+

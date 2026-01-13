@@ -17,7 +17,7 @@ with col2:
     clear = st.button("Clear")
 
 if clear:
-    st.experimental_rerun()
+    st.session_state["rerun_flag"] = True
 
 if ask and question:
     with st.spinner("Analyzing complaints..."):
